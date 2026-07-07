@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mammalian Brain Anatomy & Physiology — Study Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Literata:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#100D14;
+    --panel:#17131C;
+    --panel-2:#1C1725;
+    --line:#2C2634;
+    --text:#EDEAF0;
+    --muted:#9C93A6;
+
+    --protect:#4FA8C9;   /* meninges / CSF / ventricles */
+    --protect-dim:#12303A;
+    --cell:#C15FA0;      /* neurons, glia, axons, synapses */
+    --cell-dim:#341226;
+    --region:#E0883F;    /* named brain regions */
+    --region-dim:#3A2210;
+    --func:#6FAE7F;      /* systemic concepts — reflex arc, homeostasis */
+    --func-dim:#16301F;
+    --proc:#8B8F87;      /* lab protocol */
+    --proc-dim:#232620;
+
+    --mono:'IBM Plex Mono', monospace;
+    --serif:'Literata', serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--serif);}
+  ::selection{background:var(--cell-dim); color:var(--cell);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:56px 24px 40px;
+    background:
+      linear-gradient(180deg, rgba(193,95,160,0.05), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(156,147,166,0.05) 0 1px, transparent 1px 24px),
+      repeating-linear-gradient(90deg, rgba(156,147,166,0.05) 0 1px, transparent 1px 24px);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero-top{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:28px; flex-wrap:wrap; gap:8px;
+  }
+  .lead-tag{color:var(--cell);}
+  .status{color:var(--text); font-weight:600;}
+  .status span{color:var(--cell);}
+  .hero h1{
+    font-family:var(--serif); font-weight:600; font-size:clamp(32px,5vw,54px);
+    margin:0 0 10px; line-height:1.05; letter-spacing:-0.01em;
+  }
+  .hero p{ color:var(--muted); max-width:620px; font-size:16px; line-height:1.6; margin:0 0 28px;}
+  .axon-wrap{ width:100%; height:100px; }
+  .axon-wrap svg{width:100%; height:100%; display:block;}
+  .axon-line{ stroke:var(--line); stroke-width:2; fill:none; }
+  .myelin{ fill:var(--cell-dim); stroke:var(--cell); stroke-width:1.5; }
+  .impulse{ fill:var(--func); filter:drop-shadow(0 0 6px rgba(111,174,127,0.8)); }
+  .axon-label{ font-family:var(--mono); font-size:9px; letter-spacing:.06em; text-transform:uppercase; fill:var(--muted); }
+  .legend{display:flex; gap:18px; margin-top:22px; flex-wrap:wrap; font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--muted);}
+  .legend .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle;}
+  .dot-protect{background:var(--protect);}
+  .dot-cell{background:var(--cell);}
+  .dot-region{background:var(--region);}
+  .dot-func{background:var(--func);}
+
+  /* ---------- NAV ---------- */
+  .tabbar{
+    position:sticky; top:0; z-index:10;
+    display:flex; gap:2px; background:var(--panel); border-bottom:1px solid var(--line);
+    padding:0 24px; overflow-x:auto;
+  }
+  .tab{
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); background:none; border:none; padding:16px 18px; cursor:pointer;
+    border-bottom:2px solid transparent; white-space:nowrap; transition:color .15s, border-color .15s;
+  }
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--cell); border-bottom-color:var(--cell);}
+
+  main{max-width:920px; margin:0 auto; padding:44px 24px 90px;}
+  .view{display:none;}
+  .view.active{display:block; animation:fadein .3s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .section-eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cell); margin-bottom:8px;
+  }
+  .section-title{font-family:var(--serif); font-size:26px; font-weight:600; margin:0 0 6px;}
+  .section-sub{color:var(--muted); font-size:14.5px; margin:0 0 30px; line-height:1.6; max-width:620px;}
+
+  /* ---------- QUIZ / FLIP CARDS ---------- */
+  .quiz-grid{display:flex; flex-direction:column; gap:14px;}
+  .flip-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px 22px; cursor:pointer; transition:border-color .2s, background .2s;
+    position:relative;
+  }
+  .flip-card:hover{border-color:var(--line); background:var(--panel-2);}
+  .flip-card.open{border-color:var(--cell-dim);}
+  .fc-head{display:flex; align-items:flex-start; gap:14px;}
+  .fc-num{font-family:var(--mono); font-size:12px; color:var(--muted); padding-top:3px; min-width:22px;}
+  .fc-q{font-size:16.5px; line-height:1.5; flex:1;}
+  .fc-badge{
+    font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    padding:3px 8px; border-radius:20px; white-space:nowrap; margin-top:2px;
+  }
+  .badge-protect{background:var(--protect-dim); color:var(--protect);}
+  .badge-cell{background:var(--cell-dim); color:var(--cell);}
+  .badge-region{background:var(--region-dim); color:var(--region);}
+  .badge-func{background:var(--func-dim); color:var(--func);}
+  .fc-answer{
+    max-height:0; overflow:hidden; transition:max-height .35s ease, opacity .3s ease, margin-top .3s ease;
+    opacity:0; font-size:15px; line-height:1.65; color:var(--muted); border-top:1px dashed var(--line);
+    margin-top:0; padding-top:0;
+  }
+  .flip-card.open .fc-answer{max-height:400px; opacity:1; margin-top:16px; padding-top:16px;}
+
+  /* ---------- ESSAY ACCORDION ---------- */
+  .essay-list{display:flex; flex-direction:column; gap:12px;}
+  .essay-item{background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  .essay-trigger{
+    width:100%; text-align:left; background:none; border:none; color:var(--text);
+    padding:18px 22px; font-family:var(--serif); font-size:16.5px; cursor:pointer;
+    display:flex; justify-content:space-between; gap:16px; align-items:center;
+  }
+  .essay-trigger .plus{font-family:var(--mono); color:var(--cell); font-size:18px; transition:transform .25s;}
+  .essay-item.open .plus{transform:rotate(45deg);}
+  .essay-body{max-height:0; overflow:hidden; transition:max-height .35s ease;}
+  .essay-body-inner{padding:0 22px 20px; color:var(--muted); font-size:14.5px; line-height:1.65;}
+  .essay-item.open .essay-body{max-height:220px;}
+
+  /* ---------- GLOSSARY ---------- */
+  .glossary-controls{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:26px;}
+  .g-search{
+    flex:1; min-width:180px; background:var(--panel); border:1px solid var(--line); color:var(--text);
+    padding:10px 14px; border-radius:8px; font-family:var(--mono); font-size:13px; outline:none;
+  }
+  .g-search:focus{border-color:var(--cell-dim);}
+  .g-filter{
+    font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--panel); border:1px solid var(--line); color:var(--muted);
+    padding:9px 14px; border-radius:8px; cursor:pointer;
+  }
+  .g-filter.active{color:var(--bg); background:var(--cell); border-color:var(--cell);}
+  .glossary-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:12px;}
+  .g-card{
+    background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--muted);
+    border-radius:8px; padding:16px 18px;
+  }
+  .g-card.cat-protect{border-left-color:var(--protect);}
+  .g-card.cat-cell{border-left-color:var(--cell);}
+  .g-card.cat-region{border-left-color:var(--region);}
+  .g-card.cat-func{border-left-color:var(--func);}
+  .g-card.cat-proc{border-left-color:var(--proc);}
+  .g-term{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px; letter-spacing:.02em;}
+  .g-def{font-size:14px; line-height:1.55; color:var(--muted);}
+  .g-empty{color:var(--muted); font-family:var(--mono); font-size:13px; padding:20px 0;}
+
+  @media (max-width:560px){
+    .hero{padding:40px 16px 28px;}
+    main{padding:32px 16px 70px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <span><span class="lead-tag">●</span> REFLEX ARC &nbsp; SALTATORY CONDUCTION</span>
+    <span class="status">STAGE: <span id="statusVal">SENSING</span></span>
+  </div>
+  <h1>Mammalian Brain<br>Anatomy & Physiology</h1>
+  <p>A study guide for the nervous system's control tower — its protective layers, its regions, and the signal that jumps node to node from stimulus to response. Follow the impulse, then test what you know.</p>
+  <div class="axon-wrap">
+    <svg viewBox="0 0 1400 100" preserveAspectRatio="none">
+      <line class="axon-line" x1="0" y1="50" x2="1400" y2="50"/>
+      <rect class="myelin" x="120" y="38" width="130" height="24" rx="12"/>
+      <rect class="myelin" x="340" y="38" width="130" height="24" rx="12"/>
+      <rect class="myelin" x="560" y="38" width="130" height="24" rx="12"/>
+      <rect class="myelin" x="780" y="38" width="130" height="24" rx="12"/>
+      <rect class="myelin" x="1000" y="38" width="130" height="24" rx="12"/>
+      <rect class="myelin" x="1220" y="38" width="130" height="24" rx="12"/>
+      <text class="axon-label" x="10" y="30">sensory receptor</text>
+      <text class="axon-label" x="1240" y="30">effector</text>
+      <circle class="impulse" r="7">
+        <animateMotion dur="2.6s" repeatCount="indefinite"
+          path="M10,50 L1390,50" keyTimes="0;1" keyPoints="0;1" calcMode="linear"/>
+      </circle>
+    </svg>
+  </div>
+  <div class="legend">
+    <span><span class="dot dot-protect"></span>Protective / fluid systems</span>
+    <span><span class="dot dot-cell"></span>Cellular components</span>
+    <span><span class="dot dot-region"></span>Brain regions</span>
+    <span><span class="dot dot-func"></span>Systemic concepts</span>
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab active" data-view="quiz">Quiz + Answers</button>
+  <button class="tab" data-view="essay">Essay Prompts</button>
+  <button class="tab" data-view="glossary">Glossary</button>
+</div>
+
+<main>
+
+  <!-- QUIZ VIEW -->
+  <section id="quiz" class="view active">
+    <div class="section-eyebrow">Part 1 &amp; 2</div>
+    <h2 class="section-title">Quiz — tap a question to reveal the answer</h2>
+    <p class="section-sub">Ten questions from the source material, tagged by which part of the nervous system they belong to.</p>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <!-- ESSAY VIEW -->
+  <section id="essay" class="view">
+    <div class="section-eyebrow">Part 3</div>
+    <h2 class="section-title">Essay prompts</h2>
+    <p class="section-sub">Longer-form prompts for building out full responses, each with a one-line steer on where the source material points.</p>
+    <div class="essay-list" id="essayList"></div>
+  </section>
+
+  <!-- GLOSSARY VIEW -->
+  <section id="glossary" class="view">
+    <div class="section-eyebrow">Part 4</div>
+    <h2 class="section-title">Glossary</h2>
+    <p class="section-sub">Search by term, or filter by system. Border color matches the legend above.</p>
+    <div class="glossary-controls">
+      <input class="g-search" id="gSearch" type="text" placeholder="Search terms or definitions…">
+      <button class="g-filter active" data-cat="all">All</button>
+      <button class="g-filter" data-cat="protect">Protective</button>
+      <button class="g-filter" data-cat="cell">Cellular</button>
+      <button class="g-filter" data-cat="region">Regions</button>
+      <button class="g-filter" data-cat="func">Systemic</button>
+    </div>
+    <div class="glossary-grid" id="glossaryGrid"></div>
+    <div class="g-empty" id="gEmpty" style="display:none;">No terms match that search.</div>
+  </section>
+
+</main>
+
+<script>
+const quizData = [
+  {cat:'func', badge:'Core principle', q:"What is the principle of complementarity of structure and function?", a:"The principle states that at every level of biological organization, a structure's physical form reflects its specific function and vice versa. For the brain, this means examining a region's anatomical layout is essential to understanding how it executes life-sustaining processes and maintains homeostasis."},
+  {cat:'cell', badge:'Tissue type', q:"How do gray matter and white matter differ in composition and appearance?", a:"Gray matter consists primarily of neuronal cell bodies, dendrites, glia, and unmyelinated axons, appearing gray in preserved specimens. White matter is composed of axons sheathed in myelin, giving it a shiny white appearance and enabling rapid signal transmission."},
+  {cat:'protect', badge:'Meninges', q:"What are the three layers of the meninges, and what is their primary purpose?", a:"The meninges consist of the superficial and tough dura mater, the web-like arachnoid, and the delicate, deep pia mater that adheres to the brain's surface. Together these connective tissue layers surround and protect the CNS from physical injury."},
+  {cat:'protect', badge:'CSF', q:"Describe the function and circulation of cerebrospinal fluid (CSF).", a:"CSF is a clear, colorless fluid produced by the choroid plexus that cushions the CNS and acts as a shock absorber. It circulates through the four ventricles of the brain, the central canal of the spinal cord, and the subarachnoid space."},
+  {cat:'region', badge:'Forebrain', q:"What is the role of the hypothalamus in the human body?", a:"The hypothalamus is a critical forebrain structure that regulates key processes necessary for maintaining homeostasis. It contains specialized hormone-secreting neurons, making it a vital link between the nervous and endocrine systems."},
+  {cat:'region', badge:'Midbrain', q:"Distinguish between the functions of the superior and inferior colliculi.", a:"The two superior colliculi serve as visual reflex centers that coordinate eye, head, and neck movements in response to stimuli like flashes of light. The two inferior colliculi are specifically associated with processing auditory information."},
+  {cat:'region', badge:'Cerebrum', q:"What is the structural and functional significance of the corpus callosum?", a:"The corpus callosum is the most prominent white matter tract in the brain, located deep within the cerebrum. Its primary function is to connect the right and left cerebral hemispheres, allowing communication and coordination between them."},
+  {cat:'func', badge:'Reflex arc', q:"Define a reflex arc and identify its primary components.", a:"A reflex arc is the neural pathway that generates an automatic, involuntary response to a stimulus. It typically includes a sensory receptor, an afferent fiber (sensory neuron), an interneuron (in most cases), and an efferent fiber (motor neuron) that carries the signal to an effector, such as a muscle."},
+  {cat:'func', badge:'Nervous vs. endocrine', q:"How does the endocrine system differ from the nervous system in its response to stimuli?", a:"The nervous system is designed for rapid, transient responses, such as instantaneous reflexes. The endocrine system uses hormone-secreting glands to generate slower, more sustained responses to maintain body functions."},
+  {cat:'region', badge:'Cranial nerve VIII', q:"What is the specific function of the vestibulocochlear nerve (VIII)?", a:"The vestibulocochlear nerve is a sensory nerve that carries information from the inner ear to the brain. It is responsible for the senses of hearing and balance."}
+];
+
+const essayData = [
+  {q:"The Interdependence of Systems", hint:"Explain how the nervous and endocrine systems collaborate to maintain homeostasis, including the hypothalamus's role as a bridge between them.", steer:"Lead with the speed contrast from question 9 (rapid nervous vs. sustained endocrine), then use the hypothalamus's hormone-secreting neurons as the literal connecting structure."},
+  {q:"Protective Mechanisms of the CNS", hint:"Describe the physical and fluid-based defenses protecting the brain and spinal cord — the cranium, the three meningeal layers, and the CSF.", steer:"Work from outside in: cranium, then dura mater, arachnoid, pia mater, then CSF cushioning within the ventricles and subarachnoid space."},
+  {q:"Cerebral Architecture", hint:"Discuss the relationship between the cerebral cortex's wrinkled appearance and its functional capacity, contrasting the five cerebral lobes.", steer:"Note that gyri and sulci increase surface area for cortical tissue, then contrast frontal, parietal, temporal, and occipital lobe functions — plus the pyriform lobe's olfactory role, notably prominent in the sheep brain used for dissection."},
+  {q:"The Anatomy of Communication", hint:"Trace a nerve impulse from a sensory receptor through a spinal reflex arc to an effector, and explain how interneurons allow the brain to inhibit automatic responses.", steer:"Use the reflex arc components from question 8 as your sequence, then explain the interneuron's dual role — relaying to the motor neuron and passing signals upward to the brain."},
+  {q:"Cranial Nerve Diversity", hint:"Analyze the classification of cranial nerves into sensory, motor, and mixed types, with examples of specialized functions like vision, mastication, and visceral regulation.", steer:"Use the vestibulocochlear nerve (sensory) from question 10 as one example, and pull a motor and a mixed nerve example to round out the three categories."}
+];
+
+const glossaryData = [
+  {t:"Afferent Fiber", d:"A nerve fiber (axon) that conveys sensory information toward the central nervous system.", cat:"func"},
+  {t:"Arbor Vitae", d:"The branching white matter located deep within the cerebellum, resembling a tree.", cat:"region"},
+  {t:"Arachnoid", d:"The middle layer of the meninges, characterized by a spiderweb-like texture.", cat:"protect"},
+  {t:"Axon", d:"A single long process of a neuron that conveys nerve impulses away from the cell body.", cat:"cell"},
+  {t:"Basal Nuclei", d:"Collections of gray matter embedded in the white matter of the cerebrum involved in voluntary movement and learning.", cat:"region"},
+  {t:"Brain Stem", d:"The region comprising the medulla, pons, and midbrain; it links the brain to the spinal cord.", cat:"region"},
+  {t:"Carosafe®", d:"A formaldehyde-free preservative and holding solution for biological specimens, primarily composed of propylene glycol.", cat:"proc"},
+  {t:"Cerebellum", d:"A cauliflower-like structure of the hindbrain essential for motor control and movement.", cat:"region"},
+  {t:"Cerebrum", d:"The largest part of the mammalian brain, responsible for learning, memory, judgment, and initiating voluntary activities.", cat:"region"},
+  {t:"Choroid Plexus", d:"Specialized epithelium within the ventricles that produces cerebrospinal fluid (CSF).", cat:"protect"},
+  {t:"Corpora Quadrigemina", d:"A collection of four bodies on the superior midbrain consisting of the superior and inferior colliculi.", cat:"region"},
+  {t:"Dendrite", d:"Neuronal processes that convey nerve impulses toward the cell body.", cat:"cell"},
+  {t:"Dura Mater", d:"The tough, most superficial layer of the meninges.", cat:"protect"},
+  {t:"Effector", d:"A muscle or gland cell that executes a response to a stimulus.", cat:"func"},
+  {t:"Efferent Fiber", d:"A nerve fiber (axon) that conveys motor commands away from the central nervous system toward an effector.", cat:"func"},
+  {t:"Glia", d:"Also called neuroglia; cells that provide structural and metabolic support for neurons.", cat:"cell"},
+  {t:"Gyri", d:"The crests or ridges of the wrinkled surface of the cerebral cortex.", cat:"region"},
+  {t:"Homeostasis", d:"The dynamic internal equilibrium maintained by the body to sustain life and health.", cat:"func"},
+  {t:"Medulla", d:"Part of the brain stem continuous with the spinal cord; regulates involuntary activities like breathing and heartbeat.", cat:"region"},
+  {t:"Myelin Sheath", d:"A fatty insulation surrounding axons, produced by Schwann cells (PNS) or oligodendrocytes (CNS), that speeds up nerve impulses.", cat:"cell"},
+  {t:"Neuron", d:"The primary cell type of nervous tissue, specialized for receiving and transmitting electrochemical signals.", cat:"cell"},
+  {t:"Neurotransmitter", d:"Signaling molecules released from axon terminals that diffuse across a synapse to bind with a target cell's receptors.", cat:"cell"},
+  {t:"Pia Mater", d:"The delicate, deepest layer of the meninges that adheres closely to the brain and spinal cord.", cat:"protect"},
+  {t:"Pons", d:"A bulb-shaped relay center in the brain stem that helps regulate sleeping and breathing.", cat:"region"},
+  {t:"Soma", d:"The cell body of a neuron, housing the nucleus and most organelles.", cat:"cell"},
+  {t:"Sulci", d:"The shallow grooves located between the gyri on the surface of the cerebral cortex.", cat:"region"},
+  {t:"Synapse", d:"The structure where communication occurs between a neuron and its target cell.", cat:"cell"},
+  {t:"Thalamus", d:"A major relay center that directs sensory information (except olfactory) to the cerebrum and regulates sleep and consciousness.", cat:"region"},
+  {t:"Ventricles", d:"Four interconnected, fluid-filled cavities within the brain.", cat:"protect"}
+];
+
+const badgeClass = {protect:'badge-protect', cell:'badge-cell', region:'badge-region', func:'badge-func'};
+const catClass = {protect:'cat-protect', cell:'cat-cell', region:'cat-region', func:'cat-func', proc:'cat-proc'};
+
+// Build quiz cards
+const quizGrid = document.getElementById('quizGrid');
+quizData.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `
+    <div class="fc-head">
+      <span class="fc-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="fc-q">${item.q}</span>
+      <span class="fc-badge ${badgeClass[item.cat]}">${item.badge}</span>
+    </div>
+    <div class="fc-answer">${item.a}</div>
+  `;
+  card.addEventListener('click', () => card.classList.toggle('open'));
+  quizGrid.appendChild(card);
+});
+
+// Build essay accordion
+const essayList = document.getElementById('essayList');
+essayData.forEach((item, i) => {
+  const el = document.createElement('div');
+  el.className = 'essay-item';
+  el.innerHTML = `
+    <button class="essay-trigger">
+      <span>${i+1}. ${item.q}</span>
+      <span class="plus">+</span>
+    </button>
+    <div class="essay-body"><div class="essay-body-inner"><strong style="color:var(--text)">Prompt:</strong> ${item.hint}<br><br><strong style="color:var(--text)">Where to start:</strong> ${item.steer}</div></div>
+  `;
+  el.querySelector('.essay-trigger').addEventListener('click', () => el.classList.toggle('open'));
+  essayList.appendChild(el);
+});
+
+// Build glossary
+const glossaryGrid = document.getElementById('glossaryGrid');
+const gEmpty = document.getElementById('gEmpty');
+let activeCat = 'all';
+function renderGlossary(){
+  const q = document.getElementById('gSearch').value.trim().toLowerCase();
+  glossaryGrid.innerHTML = '';
+  const filtered = glossaryData.filter(item => {
+    const matchCat = activeCat === 'all' || item.cat === activeCat;
+    const matchQ = !q || item.t.toLowerCase().includes(q) || item.d.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  gEmpty.style.display = filtered.length ? 'none' : 'block';
+  filtered.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `g-card ${catClass[item.cat]}`;
+    card.innerHTML = `<div class="g-term">${item.t}</div><div class="g-def">${item.d}</div>`;
+    glossaryGrid.appendChild(card);
+  });
+}
+document.getElementById('gSearch').addEventListener('input', renderGlossary);
+document.querySelectorAll('.g-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.g-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    renderGlossary();
+  });
+});
+renderGlossary();
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.view).classList.add('active');
+  });
+});
+
+// Ambient status cycle
+const statusEl = document.getElementById('statusVal');
+const stages = ['SENSING','CONDUCTING','INTEGRATING','RESPONDING'];
+let si = 0;
+setInterval(() => {
+  si = (si + 1) % stages.length;
+  statusEl.textContent = stages[si];
+}, 2200);
+</script>
+
+</body>
+</html>
