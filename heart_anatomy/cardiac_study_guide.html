@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cardiac Anatomy & Physiology — Study Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Literata:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E14;
+    --panel:#121824;
+    --panel-2:#161D2B;
+    --line:#232C3D;
+    --text:#E8EDF2;
+    --muted:#8B98A8;
+    --trace:#2DE370;
+    --trace-dim:#12492A;
+    --ox:#E8483C;
+    --ox-dim:#3A1815;
+    --deox:#3E7CB1;
+    --deox-dim:#132433;
+    --amber:#D9A441;
+    --amber-dim:#332508;
+    --mono:'IBM Plex Mono', monospace;
+    --serif:'Literata', serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--serif);}
+  ::selection{background:var(--trace-dim);color:var(--trace);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:56px 24px 40px;
+    background:
+      linear-gradient(180deg, rgba(45,227,112,0.04), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(139,152,168,0.05) 0 1px, transparent 1px 24px),
+      repeating-linear-gradient(90deg, rgba(139,152,168,0.05) 0 1px, transparent 1px 24px);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero-top{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:28px; flex-wrap:wrap; gap:8px;
+  }
+  .lead-tag{color:var(--trace);}
+  .bpm{color:var(--text); font-weight:600;}
+  .bpm span{color:var(--trace);}
+  .hero h1{
+    font-family:var(--serif); font-weight:600; font-size:clamp(32px,5vw,54px);
+    margin:0 0 10px; line-height:1.05; letter-spacing:-0.01em;
+  }
+  .hero p{ color:var(--muted); max-width:620px; font-size:16px; line-height:1.6; margin:0 0 28px;}
+  .ekg-wrap{ width:100%; height:90px; }
+  .ekg-wrap svg{width:100%; height:100%; display:block;}
+  .ekg-path{
+    fill:none; stroke:var(--trace); stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:1400; stroke-dashoffset:1400;
+    animation:draw 4.2s linear infinite;
+    filter:drop-shadow(0 0 4px rgba(45,227,112,0.55));
+  }
+  @keyframes draw{
+    0%{stroke-dashoffset:1400;}
+    70%{stroke-dashoffset:0;}
+    100%{stroke-dashoffset:-40;}
+  }
+  .legend{display:flex; gap:18px; margin-top:22px; flex-wrap:wrap; font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--muted);}
+  .legend .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle;}
+  .dot-ox{background:var(--ox);}
+  .dot-deox{background:var(--deox);}
+  .dot-elec{background:var(--trace);}
+  .dot-struct{background:var(--amber);}
+
+  /* ---------- NAV ---------- */
+  .tabbar{
+    position:sticky; top:0; z-index:10;
+    display:flex; gap:2px; background:var(--panel); border-bottom:1px solid var(--line);
+    padding:0 24px; overflow-x:auto;
+  }
+  .tab{
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); background:none; border:none; padding:16px 18px; cursor:pointer;
+    border-bottom:2px solid transparent; white-space:nowrap; transition:color .15s, border-color .15s;
+  }
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--trace); border-bottom-color:var(--trace);}
+
+  main{max-width:920px; margin:0 auto; padding:44px 24px 90px;}
+  .view{display:none;}
+  .view.active{display:block; animation:fadein .3s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .section-eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--trace); margin-bottom:8px;
+  }
+  .section-title{font-family:var(--serif); font-size:26px; font-weight:600; margin:0 0 6px;}
+  .section-sub{color:var(--muted); font-size:14.5px; margin:0 0 30px; line-height:1.6; max-width:620px;}
+
+  /* ---------- QUIZ / FLIP CARDS ---------- */
+  .quiz-grid{display:flex; flex-direction:column; gap:14px;}
+  .flip-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px 22px; cursor:pointer; transition:border-color .2s, background .2s;
+    position:relative;
+  }
+  .flip-card:hover{border-color:var(--line); background:var(--panel-2);}
+  .flip-card.open{border-color:var(--trace-dim);}
+  .fc-head{display:flex; align-items:flex-start; gap:14px;}
+  .fc-num{font-family:var(--mono); font-size:12px; color:var(--muted); padding-top:3px; min-width:22px;}
+  .fc-q{font-size:16.5px; line-height:1.5; flex:1;}
+  .fc-badge{
+    font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    padding:3px 8px; border-radius:20px; white-space:nowrap; margin-top:2px;
+  }
+  .badge-elec{background:var(--trace-dim); color:var(--trace);}
+  .badge-struct{background:var(--amber-dim); color:var(--amber);}
+  .badge-ox{background:var(--ox-dim); color:var(--ox);}
+  .badge-deox{background:var(--deox-dim); color:var(--deox);}
+  .fc-answer{
+    max-height:0; overflow:hidden; transition:max-height .35s ease, opacity .3s ease, margin-top .3s ease;
+    opacity:0; font-size:15px; line-height:1.65; color:var(--muted); border-top:1px dashed var(--line);
+    margin-top:0; padding-top:0;
+  }
+  .flip-card.open .fc-answer{max-height:400px; opacity:1; margin-top:16px; padding-top:16px;}
+  .fc-hint{font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-left:36px; margin-top:6px; letter-spacing:.05em;}
+
+  /* ---------- BLOOD PATH STEPPER ---------- */
+  .path-stage{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:32px; text-align:center; margin-bottom:20px; min-height:180px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .path-num{font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--muted); margin-bottom:10px;}
+  .path-name{font-family:var(--serif); font-size:28px; font-weight:600; margin-bottom:10px;}
+  .path-badge{
+    font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:16px;
+  }
+  .path-desc{color:var(--muted); font-size:15px; line-height:1.6; max-width:520px;}
+  .path-controls{display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .path-btn{
+    font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    padding:11px 20px; border-radius:8px; cursor:pointer; transition:border-color .15s, color .15s;
+  }
+  .path-btn:hover{border-color:var(--trace-dim); color:var(--trace);}
+  .path-btn:disabled{opacity:.35; cursor:default;}
+  .path-btn:disabled:hover{border-color:var(--line); color:var(--text);}
+  .path-dots{display:flex; gap:6px; flex-wrap:wrap; justify-content:center;}
+  .path-dot{
+    width:9px; height:9px; border-radius:50%; background:var(--line); cursor:pointer;
+    border:none; padding:0; transition:background .15s, transform .15s;
+  }
+  .path-dot.active{background:var(--trace); transform:scale(1.3);}
+  .path-dot.cat-ox{background:var(--ox-dim);}
+  .path-dot.cat-deox{background:var(--deox-dim);}
+  .path-dot.cat-struct{background:var(--amber-dim);}
+  .path-dot.active.cat-ox{background:var(--ox);}
+  .path-dot.active.cat-deox{background:var(--deox);}
+  .path-dot.active.cat-struct{background:var(--amber);}
+
+  /* ---------- ESSAY ACCORDION ---------- */
+  .essay-list{display:flex; flex-direction:column; gap:12px;}
+  .essay-item{background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  .essay-trigger{
+    width:100%; text-align:left; background:none; border:none; color:var(--text);
+    padding:18px 22px; font-family:var(--serif); font-size:16.5px; cursor:pointer;
+    display:flex; justify-content:space-between; gap:16px; align-items:center;
+  }
+  .essay-trigger .plus{font-family:var(--mono); color:var(--trace); font-size:18px; transition:transform .25s;}
+  .essay-item.open .plus{transform:rotate(45deg);}
+  .essay-body{max-height:0; overflow:hidden; transition:max-height .35s ease;}
+  .essay-body-inner{padding:0 22px 20px; color:var(--muted); font-size:14.5px; line-height:1.65;}
+  .essay-item.open .essay-body{max-height:200px;}
+
+  /* ---------- GLOSSARY ---------- */
+  .glossary-controls{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:26px;}
+  .g-search{
+    flex:1; min-width:180px; background:var(--panel); border:1px solid var(--line); color:var(--text);
+    padding:10px 14px; border-radius:8px; font-family:var(--mono); font-size:13px; outline:none;
+  }
+  .g-search:focus{border-color:var(--trace-dim);}
+  .g-filter{
+    font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--panel); border:1px solid var(--line); color:var(--muted);
+    padding:9px 14px; border-radius:8px; cursor:pointer;
+  }
+  .g-filter.active{color:var(--bg); background:var(--trace); border-color:var(--trace);}
+  .glossary-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:12px;}
+  .g-card{
+    background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--muted);
+    border-radius:8px; padding:16px 18px;
+  }
+  .g-card.cat-elec{border-left-color:var(--trace);}
+  .g-card.cat-struct{border-left-color:var(--amber);}
+  .g-card.cat-ox{border-left-color:var(--ox);}
+  .g-card.cat-deox{border-left-color:var(--deox);}
+  .g-term{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px; letter-spacing:.02em;}
+  .g-def{font-size:14px; line-height:1.55; color:var(--muted);}
+  .g-empty{color:var(--muted); font-family:var(--mono); font-size:13px; padding:20px 0;}
+
+  @media (max-width:560px){
+    .hero{padding:40px 16px 28px;}
+    main{padding:32px 16px 70px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <span><span class="lead-tag">●</span> LEAD II &nbsp; 25mm/s &nbsp; 10mm/mV</span>
+    <span class="bpm">HR <span id="bpmVal">74</span> BPM</span>
+  </div>
+  <h1>Cardiac Anatomy<br>& Physiology</h1>
+  <p>A study guide for the mammalian heart — its chambers, valves, wiring, and the two circuits of blood it keeps in motion. Trace the signal, follow the flow, and test what you know.</p>
+  <div class="ekg-wrap">
+    <svg viewBox="0 0 1400 90" preserveAspectRatio="none">
+      <path class="ekg-path" d="M0,45 L60,45 L80,45 L95,20 L110,70 L125,10 L140,45 L340,45 L360,45 L375,30 L390,60 L405,10 L420,45 L620,45 L640,45 L655,20 L670,70 L685,10 L700,45 L900,45 L920,45 L935,30 L950,60 L965,10 L980,45 L1180,45 L1200,45 L1215,20 L1230,70 L1245,10 L1260,45 L1400,45"/>
+    </svg>
+  </div>
+  <div class="legend">
+    <span><span class="dot dot-ox"></span>Oxygenated / systemic</span>
+    <span><span class="dot dot-deox"></span>Deoxygenated / pulmonary</span>
+    <span><span class="dot dot-elec"></span>Electrical conduction</span>
+    <span><span class="dot dot-struct"></span>Structural tissue</span>
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab active" data-view="quiz">Quiz + Answers</button>
+  <button class="tab" data-view="path">Blood Flow Path</button>
+  <button class="tab" data-view="live">Live Checks</button>
+  <button class="tab" data-view="essay">Essay Prompts</button>
+  <button class="tab" data-view="glossary">Glossary</button>
+</div>
+
+<main>
+
+  <!-- QUIZ VIEW -->
+  <section id="quiz" class="view active">
+    <div class="section-eyebrow">Part 1 &amp; 2</div>
+    <h2 class="section-title">Quiz — tap a question to reveal the answer</h2>
+    <p class="section-sub">Fifteen questions — the original ten plus five pulled from the full presentation (coronary arteries, Purkinje fibers, and more). Each is tagged by the system it belongs to.</p>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <!-- BLOOD FLOW PATH VIEW -->
+  <section id="path" class="view">
+    <div class="section-eyebrow">Presentation companion</div>
+    <h2 class="section-title">Blood flow path — step through it live</h2>
+    <p class="section-sub">Follows the presentation's order exactly, chamber by chamber and valve by valve. Use Next/Prev to keep pace during a fast-moving session, or click any dot to jump.</p>
+    <div class="path-stage">
+      <div class="path-num" id="pathNum">STOP 1 OF 14</div>
+      <div class="path-name" id="pathName"></div>
+      <span class="path-badge" id="pathBadge"></span>
+      <div class="path-desc" id="pathDesc"></div>
+    </div>
+    <div class="path-controls">
+      <button class="path-btn" id="pathPrev">← Prev</button>
+      <div class="path-dots" id="pathDots"></div>
+      <button class="path-btn" id="pathNext">Next →</button>
+    </div>
+  </section>
+
+  <!-- LIVE CHECKS VIEW -->
+  <section id="live" class="view">
+    <div class="section-eyebrow">Comprehension checks</div>
+    <h2 class="section-title">Live checks — call these out during the session</h2>
+    <p class="section-sub">The two moments the presentation pauses for a comprehension check. Tap to reveal the answer if you need it.</p>
+    <div class="quiz-grid" id="liveGrid"></div>
+  </section>
+
+  <!-- ESSAY VIEW -->
+  <section id="essay" class="view">
+    <div class="section-eyebrow">Part 3</div>
+    <h2 class="section-title">Essay prompts</h2>
+    <p class="section-sub">Longer-form prompts for building out full responses. Expand each for a one-line steer on where the source material points.</p>
+    <div class="essay-list" id="essayList"></div>
+  </section>
+
+  <!-- GLOSSARY VIEW -->
+  <section id="glossary" class="view">
+    <div class="section-eyebrow">Part 4</div>
+    <h2 class="section-title">Glossary</h2>
+    <p class="section-sub">Search by term, or filter by system. Border color matches the legend above.</p>
+    <div class="glossary-controls">
+      <input class="g-search" id="gSearch" type="text" placeholder="Search terms or definitions…">
+      <button class="g-filter active" data-cat="all">All</button>
+      <button class="g-filter" data-cat="elec">Electrical</button>
+      <button class="g-filter" data-cat="struct">Structural</button>
+      <button class="g-filter" data-cat="ox">Oxygenated</button>
+      <button class="g-filter" data-cat="deox">Deoxygenated</button>
+    </div>
+    <div class="glossary-grid" id="glossaryGrid"></div>
+    <div class="g-empty" id="gEmpty" style="display:none;">No terms match that search.</div>
+  </section>
+
+</main>
+
+<script>
+const quizData = [
+  {cat:'deox', badge:'Vascular · deoxygenated', q:"Describe the primary differences between the superior vena cava and the inferior vena cava.", a:"The superior vena cava carries deoxygenated blood from the upper half of the body — head, neck, arms, and upper chest. The inferior vena cava gathers deoxygenated blood from the lower body, including the legs, abdomen, and pelvis, returning it to the right atrium."},
+  {cat:'struct', badge:'Structural', q:"Explain the structural and functional differences between the atria and the ventricles.", a:"The heart is a four-chambered pump. The two upper chambers, the atria, serve as collection areas for blood. The two lower chambers, the ventricles, act as the primary pumping units that move blood out of the heart and into circulation."},
+  {cat:'deox', badge:'Valve · right heart', q:"What is the specific function of the tricuspid valve, and what structures support its operation?", a:"The tricuspid valve (the right atrioventricular valve) ensures unidirectional blood flow from the right atrium into the right ventricle while preventing backflow. It has three leaflets, supported by three papillary muscles that keep the leaflets from inverting during ventricular contraction."},
+  {cat:'struct', badge:'Structural · wall layers', q:"Define the three primary layers of the heart wall and their tissue composition.", a:"The endocardium is the internal endothelial lining, the myocardium is the middle layer of involuntary striated cardiac muscle, and the epicardium is the outer connective tissue layer. These are specialized versions of tissues found throughout the circulatory system."},
+  {cat:'elec', badge:'Electrical conduction', q:"How does the heart's electrical signal travel from the SA node to the ventricles?", a:"The SA node generates an impulse that causes the atria to contract, then passes the signal to the AV node. From there, the signal travels down the conduction system to synchronize ventricular contraction."},
+  {cat:'ox', badge:'Circulation · systemic vs. pulmonary', q:"Compare pulmonary circulation and systemic circulation.", a:"Pulmonary circulation pumps deoxygenated blood to the capillaries of the lungs for gas exchange. Systemic circulation pumps oxygen-rich blood through the aorta to the rest of the body to support organ function."},
+  {cat:'ox', badge:'Valve · left heart', q:"Describe the location and function of the mitral valve.", a:"The mitral valve sits between the left atrium and left ventricle and is unique for having only two leaflets. It opens during ventricular relaxation to let oxygenated blood fill the left ventricle, and shuts during contraction to stop backflow into the atrium."},
+  {cat:'ox', badge:'Vascular · oxygenated', q:"What are the primary branches of the aortic arch, and what areas of the body do they serve?", a:"The aortic arch gives rise to the brachiocephalic trunk (right side of the head and right forelimb), the left common carotid artery (left side of the head), and the left subclavian artery (left forelimb)."},
+  {cat:'struct', badge:'Structural · valve support', q:"Explain the role of the papillary muscles and chordae tendineae.", a:"The chordae tendineae are thick 'heart strings' anchored by the papillary muscles within the ventricles. Their job is to hold tension on the valve leaflets, preventing prolapse or inversion during the high-pressure phase of ventricular contraction."},
+  {cat:'elec', badge:'Electrical conduction', q:"What is the significance of the Bundle of HIS in cardiac coordination?", a:"The Bundle of HIS receives electrical signals from the AV node and distributes them evenly to both sides of the heart, which is what allows the ventricles to contract simultaneously for efficient blood ejection."},
+  {cat:'elec', badge:'Electrical conduction', q:"What are Purkinje fibers, and what do they do?", a:"Purkinje fibers are specialized conducting fibers that run down the septum of the heart. After the signal reaches the Bundle of HIS, it's passed to these fibers, which conduct the action potential generated by the SA node and let the conduction system synchronize ventricular contraction."},
+  {cat:'ox', badge:'Coronary circulation', q:"What are the main coronary arteries, and what do they supply?", a:"The coronary arteries are the first vessels to branch off the aorta, and they provide oxygen to the myocardium itself. The main ones are the Right Coronary Artery and the Left Main Coronary Artery, which splits into the Circumflex and Left Anterior Descending arteries."},
+  {cat:'deox', badge:'Pressure · pulmonary vs. systemic', q:"How does pulmonary artery pressure compare to aortic pressure, and why?", a:"The pulmonary artery runs at a much lower pressure than the aorta (roughly 25/5 vs. 120/80), because it only has to push deoxygenated blood the short distance to the lungs, while the aorta has to drive oxygenated blood through the entire systemic circulation."},
+  {cat:'ox', badge:'Pulmonary veins', q:"How many pulmonary veins are there, and where does the blood they carry go?", a:"There are four pulmonary veins — two from each lung. They collect oxygenated blood from the lungs and empty it into the left atrium, which serves as the holding chamber for oxygenated blood before it reaches the left ventricle."},
+  {cat:'struct', badge:'Structural · left vs. right', q:"Is the left ventricle's wall thicker, thinner, or the same as the right ventricle's — and why?", a:"The left ventricle's wall is thicker. It has to generate enough pressure to pump oxygenated blood through the entire systemic circulation, while the right ventricle only pumps deoxygenated blood the short, low-pressure distance to the lungs."}
+];
+
+const essayData = [
+  {q:"The Interdependence of Systems", hint:"Discuss how the heart contributes to homeostasis — transporting nutrients, hormones, and gases in coordination with other organ systems.", steer:"Anchor this in the definition of homeostasis as a dynamic equilibrium requiring coordinated organ systems, then use pulmonary vs. systemic circulation as your two supporting circuits."},
+  {q:"Unidirectional Blood Flow", hint:"Trace a red blood cell from the superior vena cava through all four chambers and four major valves, ending at the aorta.", steer:"Sequence it: SVC → right atrium → tricuspid valve → right ventricle → pulmonary trunk → lungs → left atrium → mitral valve → left ventricle → aortic valve → aorta."},
+  {q:"Histology and Architecture", hint:"Analyze the structural similarities between the heart and blood vessels, explaining why the heart is an 'expanded region' of the circulatory system.", steer:"Use the three wall layers (endocardium, myocardium, epicardium) as the throughline — they're specialized versions of tissue found throughout the vascular system."},
+  {q:"Electrical vs. Mechanical Action", hint:"Explain how the conduction system (nodes and bundles) triggers the mechanical actions of the myocardium and valves.", steer:"Walk SA node → AV node → Bundle of HIS, then connect each electrical step to the mechanical contraction and valve action it produces."},
+  {q:"The Left Ventricle and the Aorta", hint:"Examine the structural demands on the left ventricle and aorta in systemic circulation, including the aortic valve.", steer:"Emphasize the left ventricle's role driving oxygenated blood through the aorta — the largest vessel in the body — to the entire systemic circuit."}
+];
+
+const glossaryData = [
+  {t:"Aorta", d:"The largest blood vessel in the body; it carries oxygenated blood from the left ventricle to the systemic circulation.", cat:"ox"},
+  {t:"Aortic Valve", d:"Connects the left ventricle to the aorta. The last major valve blood passes through; has three leaflets.", cat:"ox"},
+  {t:"Atrium", d:"One of the two upper chambers of the heart that receive and collect blood before passing it to the ventricles.", cat:"struct"},
+  {t:"AV Node", d:"A component of the conduction system that receives signals from the SA node to help synchronize ventricular activity.", cat:"elec"},
+  {t:"Bundle of HIS", d:"A collection of heart muscle cells specialized for electrical conduction that distributes signals to coordinate simultaneous ventricular contraction.", cat:"elec"},
+  {t:"Chordae Tendineae", d:"Fibrous cords (often called \"heart strings\") that connect papillary muscles to the heart valves to prevent leaflet inversion.", cat:"struct"},
+  {t:"Coronary Arteries", d:"The first vessels to branch off the aorta, supplying oxygen to the myocardium. Main branches include the Right Coronary Artery and the Left Main Coronary Artery, which splits into the Circumflex and Left Anterior Descending arteries.", cat:"ox"},
+  {t:"Endocardium", d:"The endothelial tissue that lines the interior spaces and chambers of the heart.", cat:"struct"},
+  {t:"Epicardium", d:"The outer layer of the heart wall, composed primarily of connective tissue.", cat:"struct"},
+  {t:"Homeostasis", d:"The dynamic equilibrium the body sustains when in good health, requiring coordinated operation of organ systems.", cat:"struct"},
+  {t:"Mitral Valve", d:"The only bicuspid valve in the heart (anterior and posterior leaflets). Opens during ventricular relaxation to let the left ventricle fill with oxygenated blood.", cat:"ox"},
+  {t:"Myocardium", d:"The middle, muscular layer of the heart wall composed of involuntary striated cardiac muscle tissue.", cat:"struct"},
+  {t:"Papillary Muscles", d:"Muscles located in the ventricles that anchor the chordae tendineae to prevent valve prolapse.", cat:"struct"},
+  {t:"Pericardium", d:"The membrane or sac that encloses the heart.", cat:"struct"},
+  {t:"Pulmonary Trunk", d:"The major vessel that splits into the right and left pulmonary arteries to carry deoxygenated blood to the lungs.", cat:"deox"},
+  {t:"Pulmonic Valve", d:"Has three leaflets and forms the gateway between the right ventricle and the pulmonary artery; structurally very similar to the aortic valve.", cat:"deox"},
+  {t:"Purkinje Fibers", d:"Specialized conducting fibers running down the septum that carry the signal from the Bundle of HIS, synchronizing ventricular contraction.", cat:"elec"},
+  {t:"SA Node", d:"The starting point of the heart's electrical signal, providing the impulse for the cardiac cycle to begin.", cat:"elec"},
+  {t:"Tricuspid Valve", d:"The right atrioventricular valve, with three leaflets and three papillary muscles. Opens because atrial pressure exceeds ventricular pressure, and prevents backflow into the right atrium.", cat:"deox"},
+  {t:"Vena Cava", d:"Large veins (Superior and Inferior) that return deoxygenated blood from the body back to the right atrium.", cat:"deox"},
+  {t:"Ventricle", d:"One of the two lower chambers of the heart responsible for pumping blood out to the lungs or the rest of the body.", cat:"struct"}
+];
+
+const pathData = [
+  {cat:'deox', name:"Vena Cava (SVC + IVC)", badge:"Entry", desc:"Deoxygenated blood returns from the upper body via the superior vena cava and from the lower body via the inferior vena cava."},
+  {cat:'deox', name:"Right Atrium", badge:"Chamber 1 of 4", desc:"First chamber in the four-chambered heart. Collects deoxygenated blood; sits superior and anterior to the other chambers."},
+  {cat:'deox', name:"Tricuspid Valve", badge:"Valve 1 of 4", desc:"Three leaflets, three papillary muscles. Opens because pressure is higher in the atrium than the ventricle; prevents backflow."},
+  {cat:'deox', name:"Right Ventricle", badge:"Chamber 2 of 4", desc:"Half of the heart's pump function. Contracts to propel blood into the pulmonary arteries — the tricuspid slams shut as it does."},
+  {cat:'deox', name:"Pulmonic Valve", badge:"Valve 2 of 4", desc:"Three leaflets. Gateway between the right ventricle and the pulmonary artery; structurally very similar to the aortic valve."},
+  {cat:'deox', name:"Pulmonary Artery", badge:"Vessel", desc:"Carries deoxygenated blood to the lungs at low pressure (~25/5) compared to the aorta (~120/80). Splits toward the right and left lung."},
+  {cat:'struct', name:"Lungs", badge:"Gas exchange", desc:"Carbon dioxide is released and oxygen picked up — this is the turning point where blood becomes oxygenated."},
+  {cat:'ox', name:"Pulmonary Veins", badge:"Vessel", desc:"Four veins total, two from each lung, carry newly oxygenated blood into the left atrium."},
+  {cat:'ox', name:"Left Atrium", badge:"Chamber 3 of 4", desc:"The holding chamber for oxygenated blood, just before it passes into the left ventricle."},
+  {cat:'ox', name:"Mitral Valve", badge:"Valve 3 of 4", desc:"The only bicuspid valve (anterior and posterior leaflets). Opens during ventricular relaxation to fill the left ventricle."},
+  {cat:'ox', name:"Left Ventricle", badge:"Chamber 4 of 4", desc:"Contracts to expel oxygenated blood through the aorta. Highest-pressure chamber in the heart, with the thickest wall."},
+  {cat:'ox', name:"Aortic Valve", badge:"Valve 4 of 4", desc:"Three leaflets. The last major valve, connecting the left ventricle to the aorta."},
+  {cat:'ox', name:"Aorta", badge:"Vessel", desc:"Largest blood vessel in the body. Carries all oxygenated blood leaving the heart at this point."},
+  {cat:'ox', name:"Coronary Arteries", badge:"Branch off the aorta", desc:"The first vessels to branch off the aorta, feeding oxygenated blood to the myocardium itself via the right coronary, left main, circumflex, and left anterior descending arteries."}
+];
+
+const liveCheckData = [
+  {badge:'Comprehension check', q:"Name the four valves of the heart, in the order blood passes through them.", a:"Tricuspid → Pulmonic → Mitral → Aortic."},
+  {badge:'Comprehension check', q:"Is the left ventricle's wall thicker, thinner, or the same as the right ventricle's — and why?", a:"Thicker. It has to generate enough pressure to pump blood through the entire systemic circulation, while the right ventricle only pumps a short, low-pressure distance to the lungs."}
+];
+
+const badgeClass = {elec:'badge-elec', struct:'badge-struct', ox:'badge-ox', deox:'badge-deox'};
+const catClass = {elec:'cat-elec', struct:'cat-struct', ox:'cat-ox', deox:'cat-deox'};
+
+// Build quiz cards
+const quizGrid = document.getElementById('quizGrid');
+quizData.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `
+    <div class="fc-head">
+      <span class="fc-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="fc-q">${item.q}</span>
+      <span class="fc-badge ${badgeClass[item.cat]}">${item.badge}</span>
+    </div>
+    <div class="fc-answer">${item.a}</div>
+  `;
+  card.addEventListener('click', () => card.classList.toggle('open'));
+  quizGrid.appendChild(card);
+});
+
+// Build live checks (reuses flip-card styling)
+const liveGrid = document.getElementById('liveGrid');
+liveCheckData.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `
+    <div class="fc-head">
+      <span class="fc-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="fc-q">${item.q}</span>
+      <span class="fc-badge badge-elec">${item.badge}</span>
+    </div>
+    <div class="fc-answer">${item.a}</div>
+  `;
+  card.addEventListener('click', () => card.classList.toggle('open'));
+  liveGrid.appendChild(card);
+});
+
+// Build blood flow path stepper
+let pathIndex = 0;
+const pathNum = document.getElementById('pathNum');
+const pathName = document.getElementById('pathName');
+const pathBadge = document.getElementById('pathBadge');
+const pathDesc = document.getElementById('pathDesc');
+const pathDots = document.getElementById('pathDots');
+const pathPrev = document.getElementById('pathPrev');
+const pathNext = document.getElementById('pathNext');
+
+pathData.forEach((stop, i) => {
+  const dot = document.createElement('button');
+  dot.className = `path-dot cat-${stop.cat}`;
+  dot.addEventListener('click', () => { pathIndex = i; renderPath(); });
+  pathDots.appendChild(dot);
+});
+
+function renderPath(){
+  const stop = pathData[pathIndex];
+  pathNum.textContent = `STOP ${pathIndex + 1} OF ${pathData.length}`;
+  pathName.textContent = stop.name;
+  pathBadge.textContent = stop.badge;
+  pathBadge.className = `path-badge ${badgeClass[stop.cat]}`;
+  pathDesc.textContent = stop.desc;
+  document.querySelectorAll('.path-dot').forEach((d, i) => d.classList.toggle('active', i === pathIndex));
+  pathPrev.disabled = pathIndex === 0;
+  pathNext.disabled = pathIndex === pathData.length - 1;
+}
+pathPrev.addEventListener('click', () => { if (pathIndex > 0) { pathIndex--; renderPath(); } });
+pathNext.addEventListener('click', () => { if (pathIndex < pathData.length - 1) { pathIndex++; renderPath(); } });
+renderPath();
+
+// Build essay accordion
+const essayList = document.getElementById('essayList');
+essayData.forEach((item, i) => {
+  const el = document.createElement('div');
+  el.className = 'essay-item';
+  el.innerHTML = `
+    <button class="essay-trigger">
+      <span>${i+1}. ${item.q}</span>
+      <span class="plus">+</span>
+    </button>
+    <div class="essay-body"><div class="essay-body-inner"><strong style="color:var(--text)">Prompt:</strong> ${item.hint}<br><br><strong style="color:var(--text)">Where to start:</strong> ${item.steer}</div></div>
+  `;
+  el.querySelector('.essay-trigger').addEventListener('click', () => el.classList.toggle('open'));
+  essayList.appendChild(el);
+});
+
+// Build glossary
+const glossaryGrid = document.getElementById('glossaryGrid');
+const gEmpty = document.getElementById('gEmpty');
+let activeCat = 'all';
+function renderGlossary(){
+  const q = document.getElementById('gSearch').value.trim().toLowerCase();
+  glossaryGrid.innerHTML = '';
+  const filtered = glossaryData.filter(item => {
+    const matchCat = activeCat === 'all' || item.cat === activeCat;
+    const matchQ = !q || item.t.toLowerCase().includes(q) || item.d.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  gEmpty.style.display = filtered.length ? 'none' : 'block';
+  filtered.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `g-card ${catClass[item.cat]}`;
+    card.innerHTML = `<div class="g-term">${item.t}</div><div class="g-def">${item.d}</div>`;
+    glossaryGrid.appendChild(card);
+  });
+}
+document.getElementById('gSearch').addEventListener('input', renderGlossary);
+document.querySelectorAll('.g-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.g-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    renderGlossary();
+  });
+});
+renderGlossary();
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.view).classList.add('active');
+  });
+});
+
+// Ambient BPM tick
+const bpmEl = document.getElementById('bpmVal');
+setInterval(() => {
+  bpmEl.textContent = 71 + Math.floor(Math.random()*7);
+}, 1800);
+</script>
+
+</body>
+</html>
